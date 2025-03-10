@@ -1,0 +1,109 @@
+{
+  "type": "search",
+  "query": {
+    "original": "go programming",
+    "show_strict_warning": false,
+    "is_navigational": false,
+    "is_news_breaking": false,
+    "spellcheck_off": true,
+    "country": "jp",
+    "bad_results": false,
+    "should_fallback": false,
+    "postal_code": "",
+    "city": "",
+    "header_country": "",
+    "more_results_available": true,
+    "state": ""
+  },
+  "web": {
+    "type": "search",
+    "results": [
+      {
+        "title": "The Go Programming Language",
+        "url": "https://go.dev/",
+        "is_source_local": false,
+        "is_source_both": false,
+        "description": "Go is an open source programming language supported by Google. Easy to learn and get started with. Built-in concurrency and a robust standard library.",
+        "language": "en",
+        "family_friendly": true,
+        "type": "search_result",
+        "subtype": "generic",
+        "is_live": false,
+        "meta_url": {
+          "scheme": "https",
+          "netloc": "go.dev",
+          "hostname": "go.dev",
+          "favicon": "https://go.dev/favicon.ico",
+          "path": "/"
+        },
+        "profile": {
+          "name": "Go",
+          "url": "https://go.dev/",
+          "long_name": "go.dev",
+          "img": "https://go.dev/images/gophers/pilot-bust.svg"
+        }
+      },
+      {
+        "title": "Go Programming Language - Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Go_(programming_language)",
+        "is_source_local": false,
+        "is_source_both": false,
+        "description": "Go is a statically typed, compiled programming language designed at Google by Robert Griesemer, Rob Pike, and Ken Thompson. It is syntactically similar to C...",
+        "language": "en",
+        "family_friendly": true,
+        "type": "search_result",
+        "subtype": "generic",
+        "is_live": false,
+        "meta_url": {
+          "scheme": "https",
+          "netloc": "en.wikipedia.org",
+          "hostname": "en.wikipedia.org",
+          "favicon": "https://en.wikipedia.org/favicon.ico",
+          "path": "/wiki/Go_(programming_language)"
+        }
+      },
+      {
+        "title": "A Tour of Go",
+        "url": "https://go.dev/tour/",
+        "is_source_local": false,
+        "is_source_both": false,
+        "description": "An interactive introduction to Go programming in three sections. The first section covers basic syntax and data structures; the second discusses methods and interfaces...",
+        "language": "en",
+        "family_friendly": true,
+        "type": "search_result",
+        "subtype": "generic",
+        "is_live": false,
+        "meta_url": {
+          "scheme": "https",
+          "netloc": "go.dev",
+          "hostname": "go.dev",
+          "favicon": "https://go.dev/favicon.ico",
+          "path": "/tour/"
+        }
+      }
+    ],
+    "family_friendly": true
+  },
+  "mixed": {
+    "type": "mixed",
+    "main": [
+      {
+        "type": "web",
+        "index": 0,
+        "all": false
+      },
+      {
+        "type": "web",
+        "index": 1,
+        "all": false
+      },
+      {
+        "type": "web",
+        "index": 2,
+        "all": false
+      }
+    ],
+    "top": [],
+    "side": []
+  }
+}
