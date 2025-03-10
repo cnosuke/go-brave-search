@@ -78,9 +78,10 @@ func main() {
 	// Create a client with options
 	client, err := bravesearch.NewClient(
 		"your-api-key-here",
-		bravesearch.WithTimeout(30),
+		bravesearch.WithTimeout(30), // seconds
 		bravesearch.WithDefaultCountry("JP"),
-		bravesearch.WithDefaultSearchLanguage("ja"),
+		bravesearch.WithDefaultSearchLanguage("jp"), // Using 'jp' instead of 'ja'
+		bravesearch.WithDefaultUILanguage("ja-JP"),
 	)
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
@@ -178,7 +179,7 @@ client, err := bravesearch.NewClient(
     bravesearch.WithRetries(3),                    // Number of retries on transient errors
     bravesearch.WithUserAgent("MyApp/1.0"),        // Custom User-Agent
     bravesearch.WithDefaultCountry("JP"),          // Default country for searches
-    bravesearch.WithDefaultSearchLanguage("ja"),   // Default search language
+    bravesearch.WithDefaultSearchLanguage("jp"),   // Default search language
     bravesearch.WithDefaultUILanguage("ja-JP"),    // Default UI language
 )
 ```
@@ -195,13 +196,11 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -am 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## Acknowledgments
 
 - This library is not officially associated with or endorsed by Brave Software, Inc.
 - Thanks to Brave for providing an excellent search API
+
+## Author
+
+cnosuke ( x.com/cnosuke )
