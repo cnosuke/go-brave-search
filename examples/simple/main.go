@@ -18,11 +18,13 @@ func main() {
 	}
 
 	// Create a new client with options
+	// Note: search_lang should be 'jp' for Japanese according to Brave API example
 	client, err := bravesearch.NewClient(
 		apiKey,
 		bravesearch.WithTimeout(30),
 		bravesearch.WithDefaultCountry("JP"),
-		bravesearch.WithDefaultSearchLanguage("ja"),
+		bravesearch.WithDefaultSearchLanguage("jp"), // Using 'jp' instead of 'ja'
+		bravesearch.WithDefaultUILanguage("ja-JP"),  // Adding UI language
 	)
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
@@ -64,6 +66,9 @@ func main() {
 	}
 
 	fmt.Println("\nDemonstrating search with parameters:")
+
+	// Wait 1 second to avoid “429 Too Many Requests”
+	time.Sleep(1 * time.Second)
 
 	// Create search params with additional options
 	params := &bravesearch.WebSearchParams{

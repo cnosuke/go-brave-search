@@ -2,6 +2,7 @@ package bravesearch
 
 import (
 	"bytes"
+	"compress/gzip"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -27,14 +28,14 @@ func NewClient(apiKey string, options ...ClientOption) (*Client, error) {
 
 	// Default configuration
 	config := ClientConfig{
-		APIKey:           apiKey,
-		BaseURL:          BaseURL,
-		Timeout:          time.Duration(DefaultTimeout) * time.Second,
-		MaxRetries:       DefaultMaxRetries,
-		UserAgent:        DefaultUserAgent,
-		DefaultCountry:   DefaultCountry,
+		APIKey:            apiKey,
+		BaseURL:           BaseURL,
+		Timeout:           time.Duration(DefaultTimeout) * time.Second,
+		MaxRetries:        DefaultMaxRetries,
+		UserAgent:         DefaultUserAgent,
+		DefaultCountry:    DefaultCountry,
 		DefaultSearchLang: DefaultSearchLang,
-		DefaultUILang:    DefaultUILang,
+		DefaultUILang:     DefaultUILang,
 	}
 
 	// Apply options
@@ -111,7 +112,12 @@ func (c *Client) WebSearch(ctx context.Context, query string, params *WebSearchP
 
 // buildRequestURL builds the request URL with query parameters
 func (c *Client) buildRequestURL(endpoint string, params *WebSearchParams) (string, error) {
-	baseURL := c.config.BaseURL + endpoint
+	// Ensure baseURL ends with slash if endpoint doesn't start with one
+	baseURL := c.config.BaseURL
+	if !strings.HasSuffix(baseURL, "/") && !strings.HasPrefix(endpoint, "/") {
+		baseURL += "/"
+	}
+	baseURL += endpoint
 
 	// Build query string
 	values := url.Values{}
@@ -233,6 +239,12 @@ func (c *Client) makeRequest(ctx context.Context, method, url string, body inter
 
 	// Handle HTTP error status codes
 	if resp.StatusCode != http.StatusOK {
+		// For debugging, print the response body if there's an error
+		respBody, _ := io.ReadAll(resp.Body)
+
+		// Create a new response with the same body for further processing
+		resp.Body = io.NopCloser(bytes.NewBuffer(respBody))
+
 		return NewHTTPError(resp)
 	}
 
@@ -241,7 +253,24 @@ func (c *Client) makeRequest(ctx context.Context, method, url string, body inter
 
 	// Parse response body
 	if result != nil {
-		body, err := io.ReadAll(resp.Body)
+		// Check if content is gzipped
+		var bodyReader io.ReadCloser
+		contentEncoding := resp.Header.Get("Content-Encoding")
+
+		if strings.Contains(contentEncoding, "gzip") {
+			// Import required for gzip
+			var err error
+			bodyReader, err = gzip.NewReader(resp.Body)
+			if err != nil {
+				return fmt.Errorf("failed to create gzip reader: %w", err)
+			}
+			defer bodyReader.Close()
+		} else {
+			bodyReader = resp.Body
+		}
+
+		// Read the body
+		body, err := io.ReadAll(bodyReader)
 		if err != nil {
 			return err
 		}
