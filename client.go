@@ -239,11 +239,19 @@ func (c *Client) makeRequest(ctx context.Context, method, url string, body inter
 
 	// Handle HTTP error status codes
 	if resp.StatusCode != http.StatusOK {
-		// For debugging, print the response body if there's an error
-		respBody, _ := io.ReadAll(resp.Body)
+		var bodyReader io.ReadCloser
+		if strings.Contains(resp.Header.Get("Content-Encoding"), "gzip") {
+			bodyReader, _ = gzip.NewReader(resp.Body)
+			defer bodyReader.Close()
 
-		// Create a new response with the same body for further processing
-		resp.Body = io.NopCloser(bytes.NewBuffer(respBody))
+			respBody, _ := io.ReadAll(bodyReader)
+			resp.Body = io.NopCloser(bytes.NewBuffer(respBody))
+		} else {
+			// For debugging, print the response body if there's an error
+			respBody, _ := io.ReadAll(resp.Body)
+			// Create a new response with the same body for further processing
+			resp.Body = io.NopCloser(bytes.NewBuffer(respBody))
+		}
 
 		return NewHTTPError(resp)
 	}
