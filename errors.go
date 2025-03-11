@@ -39,6 +39,9 @@ var (
 
 	// ErrEmptyQuery is returned when an empty query is provided
 	ErrEmptyQuery = errors.New("query cannot be empty")
+
+	// ErrUnprocessableEntity is returned when the API returns a 422 Unprocessable Entity
+	ErrUnprocessableEntity = errors.New("unprocessable entity")
 )
 
 // APIError represents an error returned by the Brave Search API
@@ -82,6 +85,8 @@ func NewHTTPError(resp *http.Response) *APIError {
 		err = ErrNotFound
 	case http.StatusTooManyRequests:
 		err = ErrRateLimit
+	case http.StatusUnprocessableEntity:
+		err = ErrUnprocessableEntity
 	default:
 		if resp.StatusCode >= 500 {
 			err = ErrServerError
@@ -110,9 +115,9 @@ func IsRateLimitError(err error) bool {
 func IsAuthError(err error) bool {
 	var apiErr *APIError
 	if errors.As(err, &apiErr) {
-		return errors.Is(apiErr.Err, ErrUnauthorized) || 
-			   errors.Is(apiErr.Err, ErrInvalidAPIKey) ||
-			   apiErr.StatusCode == http.StatusUnauthorized
+		return errors.Is(apiErr.Err, ErrUnauthorized) ||
+			errors.Is(apiErr.Err, ErrInvalidAPIKey) ||
+			apiErr.StatusCode == http.StatusUnauthorized
 	}
 	return errors.Is(err, ErrUnauthorized) || errors.Is(err, ErrInvalidAPIKey)
 }
@@ -124,4 +129,13 @@ func IsServerError(err error) bool {
 		return errors.Is(apiErr.Err, ErrServerError) || apiErr.StatusCode >= 500
 	}
 	return errors.Is(err, ErrServerError)
+}
+
+// IsUnprocessableEntity checks if the error is an unprocessable entity error
+func IsUnprocessableEntity(err error) bool {
+	var apiErr *APIError
+	if errors.As(err, &apiErr) {
+		return errors.Is(apiErr.Err, ErrUnprocessableEntity) || apiErr.StatusCode == http.StatusUnprocessableEntity
+	}
+	return errors.Is(err, ErrUnprocessableEntity)
 }
