@@ -3,7 +3,9 @@ package bravesearch
 import (
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -42,6 +44,9 @@ var (
 
 	// ErrUnprocessableEntity is returned when the API returns a 422 Unprocessable Entity
 	ErrUnprocessableEntity = errors.New("unprocessable entity")
+
+	// ErrSubscriptionTokenInvalid is returned when the subscription token is invalid
+	ErrSubscriptionTokenInvalid = errors.New("invalid subscription token")
 )
 
 // APIError represents an error returned by the Brave Search API
@@ -86,7 +91,12 @@ func NewHTTPError(resp *http.Response) *APIError {
 	case http.StatusTooManyRequests:
 		err = ErrRateLimit
 	case http.StatusUnprocessableEntity:
-		err = ErrUnprocessableEntity
+		body, _ := io.ReadAll(resp.Body)
+		if strings.Contains(string(body), "SUBSCRIPTION_TOKEN_INVALID") {
+			err = ErrSubscriptionTokenInvalid
+		} else {
+			err = ErrUnprocessableEntity
+		}
 	default:
 		if resp.StatusCode >= 500 {
 			err = ErrServerError
